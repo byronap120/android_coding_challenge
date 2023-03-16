@@ -30,4 +30,8 @@ This repo contains code that solved the following challenge,
 
 ## Return
 
-Return to us either as a Public Repo or .zip of the android studio project (You may need to share a google drive link if the project is too large). Thank you.
+Return to us either as a Public Repo or .zip of the android studio project (You may need to share a google drive link if the project is too large). 
+
+Please include a summary of your changes. What do you think went well? What do you think you could have done better?
+
+Thank you.
