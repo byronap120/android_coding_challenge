@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.repeated_path_item.view.*
 
 class PageSequenceAdapter(
     private val items: List<Pair<String, Int>>,
@@ -33,11 +32,11 @@ class PageSequenceAdapter(
 
 class ViewHolder(private var view: View) : RecyclerView.ViewHolder(view) {
     fun bindData(data: Pair<String, Int>) {
-        view.repeated_label.text = view.context.resources.getQuantityString(
-            R.plurals.repeated_string,
-            data.second,
-            data.second
-        )
-        view.repeated_path.text = data.first
+//        view.repeated_label.text = view.context.resources.getQuantityString(
+//            R.plurals.repeated_string,
+//            data.second,
+//            data.second
+//        )
+//        view.repeated_path.text = data.first
     }
 }

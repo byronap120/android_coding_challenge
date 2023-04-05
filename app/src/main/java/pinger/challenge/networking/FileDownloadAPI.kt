@@ -9,4 +9,7 @@ interface FileDownloadAPI {
 
     @GET("/cplachta-pinger/android_coding_challenge/master/Apache.log")
     fun downloadApacheLogStream(): Observable<ResponseBody>
+
+    @GET("/cplachta-pinger/android_coding_challenge/master/Apache.log")
+    suspend fun fetchLogs(): ResponseBody
 }
