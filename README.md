@@ -21,8 +21,7 @@
 5. In this update, I have added the **Koin** dependency injection library to simplify the dependency
    injection process and improve the creation of unit tests.
 6. Due to the good architecture, dependency injection, and separation of concerns, it was possible
-   to add unit testing to the ViewModel and the Repository files, you can check the files: **
-   PageSequenceRepositoryTest** and **PageSequenceViewModelTest**
+   to add unit testing to the ViewModel and the Repository files, you can check the files: **PageSequenceRepositoryTest** and **PageSequenceViewModelTest**
 
 In conclusion, the app was updated to an architecture that promotes code reusability, improves
 testability, and integrates seamlessly with Kotlin and new Android development libraries. However,
