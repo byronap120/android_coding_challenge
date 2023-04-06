@@ -3,7 +3,7 @@ package pinger.challenge.di
 import okhttp3.OkHttpClient
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
-import pinger.challenge.data.repository.PageSequenceRepository
+import pinger.challenge.data.PageSequenceRepository
 import pinger.challenge.networking.FileDownloadAPI
 import pinger.challenge.utility.PageSequenceCalculator
 import pinger.challenge.viewmodel.PageSequenceViewModel

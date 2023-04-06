@@ -1,4 +1,4 @@
-package pinger.challenge
+package pinger.challenge.view
 
 import android.os.Bundle
 import androidx.activity.compose.setContent
@@ -12,21 +12,17 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import pinger.challenge.R
+import pinger.challenge.intent.PageSequenceIntent
 import pinger.challenge.viewmodel.PageSequenceViewModel
 
-
-class PageSequenceActivity : AppCompatActivity(), PageSequenceContract.View {
-    private lateinit var adapter: PageSequenceAdapter
-    // private lateinit var presenter: PageSequenceContract.Presenter
-
-    override fun setupPresenter(presenter: PageSequenceContract.Presenter) {
-        //this.presenter = presenter
-    }
+class PageSequenceActivity : AppCompatActivity() {
 
     private val viewModel: PageSequenceViewModel by viewModel()
 
@@ -35,24 +31,29 @@ class PageSequenceActivity : AppCompatActivity(), PageSequenceContract.View {
         setContent {
             PageSequenceScreen(viewModel)
         }
-        viewModel.fetchLogs()
+        viewModel.processIntent(PageSequenceIntent.FetchLogsIntent)
     }
-
 
     @Composable
     fun PageSequenceScreen(viewModel: PageSequenceViewModel) {
         Scaffold(
             topBar = {
                 TopAppBar(
-                    title = { Text(text = "My App") },
-                    elevation = 4.dp
+                    title = { Text(text = "Pinger Challenge") },
+                    elevation = 4.dp,
+                    backgroundColor = colorResource(id = R.color.colorPrimary),
+                    contentColor = Color.White
                 )
             },
             floatingActionButton = {
                 FloatingActionButton(
-                    onClick = { viewModel.fetchLogs() },
+                    backgroundColor = colorResource(id = R.color.colorPrimary),
+                    contentColor = Color.White,
+                    onClick = {
+                        viewModel.processIntent(PageSequenceIntent.FetchLogsIntent)
+                    },
                     modifier = Modifier
-                        .padding(16.dp)
+                        .padding(16.dp),
                 ) {
                     val icon = painterResource(id = R.drawable.ic_cloud_download_white_24dp)
                     Icon(icon, contentDescription = "Download")
@@ -111,38 +112,5 @@ class PageSequenceActivity : AppCompatActivity(), PageSequenceContract.View {
                 }
             }
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        // presenter.fetchMostPopularPathSequences()
-    }
-
-//    private fun setupViews() {
-//        repeated_path_list.layoutManager = LinearLayoutManager(this)
-//
-//        fab.setOnClickListener {
-//            viewModel.fetchLogs()
-//        }
-//    }
-
-    override fun changeProgressBarVisibility(visible: Boolean) {
-        // loading_view.visibility = if (visible) View.VISIBLE else View.GONE
-    }
-
-    override fun updatePathSequenceList(pageSequenceData: List<Pair<String, Int>>) {
-//        if (lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
-//            adapter = PageSequenceAdapter(pageSequenceData, this@PageSequenceActivity)
-//            repeated_path_list.adapter = adapter
-//        }
-    }
-
-    override fun showErrorMessage(message: String) {
-        //Snackbar.make(parent_layout, message, Snackbar.LENGTH_LONG).show()
-    }
-
-    override fun onDestroy() {
-        // presenter.cleanUp()
-        super.onDestroy()
     }
 }

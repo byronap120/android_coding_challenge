@@ -1,4 +1,4 @@
-package pinger.challenge.data.repository
+package pinger.challenge.data
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -11,7 +11,7 @@ import java.io.IOException
 
 class PageSequenceRepository(
     private val fileDownloadAPI: FileDownloadAPI,
-    private val pageSequenceCalculator: PageSequenceCalculator
+    private val pageSequenceCalculator: PageSequenceCalculator,
 ) {
     private val pathSequenceList = mutableListOf<String>()
     private val numberOfConsecutivePages = 3
