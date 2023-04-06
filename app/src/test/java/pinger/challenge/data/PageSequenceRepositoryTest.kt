@@ -1,38 +1,77 @@
-package pinger.challenge.networking
+package pinger.challenge.data
 
-import io.reactivex.observers.TestObserver
-import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.runBlocking
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
+import org.junit.After
+import org.junit.Assert.assertEquals
+import org.junit.Before
 import org.junit.Test
+import pinger.challenge.networking.FileDownloadAPI
+import pinger.challenge.utility.PageSequenceCalculator
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 
-class NetworkTransactionsTest {
-
-    private val mockNetworkClass = MockNetworkClass()
-
-    @Test
-    fun apacheFileIsReturned() {
-        val testObserver = TestObserver<String>()
-        mockNetworkClass.downloadApacheFile(testObserver, Schedulers.trampoline(), Schedulers.trampoline())
-
-        testObserver.assertValueCount(11)
-        testObserver.assertComplete()
-    }
-}
-
-class MockNetworkClass : NetworkTransactions() {
+@ExperimentalCoroutinesApi
+class PageSequenceRepositoryTest {
     private val mockWebServer = MockWebServer()
+    private lateinit var fileDownloadAPI: FileDownloadAPI
+    private lateinit var pageSequenceCalculator: PageSequenceCalculator
+    private lateinit var pageSequenceRepository: PageSequenceRepository
 
-    override fun getApi(): FileDownloadAPI {
+    private fun getApi(): FileDownloadAPI {
         val retrofit = Retrofit.Builder()
             .baseUrl(mockWebServer.url("").toString())
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .build()
+        return retrofit.create(FileDownloadAPI::class.java)
+    }
 
+    @Before
+    fun setUp() {
+        fileDownloadAPI = getApi()
+        pageSequenceCalculator = PageSequenceCalculator()
+        pageSequenceRepository = PageSequenceRepository(fileDownloadAPI, pageSequenceCalculator)
+    }
+
+    @After
+    fun tearDown() {
+        mockWebServer.shutdown()
+    }
+
+    @Test
+    fun `fetchLogs returns expected list when server response is not empty`() = runBlocking {
+        // Given
         mockWebServer.enqueue(MockResponse().setBody(getMockResponse()))
-        return retrofit.create<FileDownloadAPI>(FileDownloadAPI::class.java)
+
+        // When
+        val result = pageSequenceRepository.fetchLogs()
+
+        // Then
+        result.collect { popularSequence ->
+            assertEquals(
+                listOf(
+                    Pair(
+                        "/products/desk/\n/products/phone/\n/contact/", 1
+                    ),
+                ), popularSequence
+            )
+        }
+    }
+
+    @Test
+    fun `fetchLogs returns empty list when server response is empty`() = runBlocking {
+        // Given
+        mockWebServer.enqueue(MockResponse().setBody(""))
+
+        // When
+        val result = pageSequenceRepository.fetchLogs()
+
+        // Then
+        result.collect { popularSequence ->
+            assertEquals(emptyList<Pair<String, Int>>(), popularSequence)
+        }
     }
 
     private fun getMockResponse(): String {
@@ -48,4 +87,5 @@ class MockNetworkClass : NetworkTransactions() {
                 "123.4.5.8 - - [03/Sep/2013:18:36:18 -0600] \"GET /contact/ HTTP/1.1\" 200 3327 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/29.0.1547.65 Safari/537.36\"\n" +
                 "123.4.5.5 - - [03/Sep/2013:18:36:28 -0600] \"GET /about/ HTTP/1.1\" 200 3327 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:23.0) Gecko/20100101 Firefox/23.0\""
     }
+
 }
