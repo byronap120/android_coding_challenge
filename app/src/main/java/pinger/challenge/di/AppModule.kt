@@ -21,9 +21,9 @@ val appModule = module {
 
     single { PageSequenceCalculator() }
 
-    factory { provideRetrofit(get()) }
+    single { provideRetrofit(get()) }
 
-    factory { provideOkHttpClient() }
+    single { provideOkHttpClient() }
 }
 
 
